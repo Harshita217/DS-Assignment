@@ -14,7 +14,7 @@ def put(node, key, value, clock, sender):
     print(f"PUT to {node}: {res.json()}")
 
 def get(node, key):
-    url = f"{nodes[node]}/get/{key}"
+    url = f"{nodes[node]}/get?key={key}"  # ✅ Corrected here
     res = requests.get(url)
     print(f"GET from {node}: {res.json()}")
 
