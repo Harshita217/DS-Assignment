@@ -1,6 +1,7 @@
 from flask import Flask, request
 import threading
 import time
+import sys
 
 # --------- VectorClock Class ---------
 
@@ -40,6 +41,10 @@ all_nodes = []       # All node IDs
 
 # --------- Flask Endpoints ---------
 
+@app.route('/')
+def index():
+    return f"Node {node_id} is running with clock: {vector_clock.clock}", 200
+
 @app.route('/put', methods=['POST'])
 def put():
     global store, vector_clock
@@ -63,6 +68,7 @@ def put():
 def get():
     key = request.args.get('key')
     value = store.get(key, None)
+    print(f"[{node_id}] GET {key}={value}")
     return {'value': value}
 
 @app.route('/replicate', methods=['POST'])
@@ -97,7 +103,6 @@ def start_node(my_id, node_list):
 # --------- Entry Point ---------
 
 if __name__ == '__main__':
-    import sys
     my_node_id = sys.argv[1]            # e.g., "node1"
     node_ids = sys.argv[2].split(',')   # e.g., "node1,node2,node3"
     start_node(my_node_id, node_ids)
